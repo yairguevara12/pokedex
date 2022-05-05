@@ -5,6 +5,15 @@
  */
 package vista;
 
+import controlador.ct_consulta_ajax;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import model.md_pokemon_species;
+import model.md_resultsarray;
+
 /**
  *
  * @author yair
@@ -14,19 +23,54 @@ public class frm_mainpokedex extends javax.swing.JFrame {
     /**
      * Creates new form frm_mainpokedex
      */
+    private ct_consulta_ajax ct = new ct_consulta_ajax();
+    private md_pokemon_species md_pokemon = new md_pokemon_species();
+
     public frm_mainpokedex() {
         initComponents();
         this.setLocationRelativeTo(this);
-        prueba_list();
+        this.clean_table();
+
+        Load_table();
     }
 
-    public void prueba_list() {
+    public void Load_table() {
+        jTable_pokedex.setDefaultEditor(Object.class, null);
+        jTable_pokedex.getTableHeader().setReorderingAllowed(false);
+        jTable_pokedex.setAutoCreateColumnsFromModel(true);
+        /*   final JScrollPane scrollPane = new JScrollPane(jTable_pokedex);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
 
-        /*list_prueba.add("Item 1");
-        list_prueba.add("Item 2");
-        list_prueba.add("Item 3");
-        list_prueba.add("Item 4");
-        list_prueba.add("Item 5");*/
+        DefaultTableModel model = (DefaultTableModel) jTable_pokedex.getModel();
+        //model.
+        System.out.println(model.getColumnCount());
+        if (model.getColumnCount() == 0) {
+            model.addColumn("N°");
+
+            model.addColumn("POKEMON");
+
+        }
+
+        load_rows(model);
+    }
+
+    private void clean_table() {
+        DefaultTableModel modelclean = (DefaultTableModel) jTable_pokedex.getModel();
+        modelclean.setRowCount(0);
+    }
+
+    public void load_rows(DefaultTableModel model) {
+
+        this.md_pokemon = ct.all_pokemons();
+        md_resultsarray[] md_resultarray = md_pokemon.getResults();
+        for (int i = 0; i < 28; i++) {
+
+            model.addRow(new Object[]{
+                i,
+                md_resultarray[i].getName()
+
+            });
+        }
     }
 
     /**
@@ -39,8 +83,15 @@ public class frm_mainpokedex extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable_pokedex = new javax.swing.JTable();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jLabel_contador = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel_main_picture = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 255, 204));
@@ -48,45 +99,246 @@ public class frm_mainpokedex extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("DialogInput", 1, 24)); // NOI18N
         jLabel1.setText("POKEDEX");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_pokedex.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jTable_pokedex.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_pokedexMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable_pokedex);
+
+        jToggleButton1.setText(">");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton2.setText("<");
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel_contador.setText("1");
+
+        jLabel2.setFont(new java.awt.Font("DialogInput", 0, 14)); // NOI18N
+        jLabel2.setText("Nombre : ");
+
+        jLabel3.setText("...");
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(252, 252, 252)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel_contador, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(89, 89, 89)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(506, 506, 506)
-                        .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1091, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_main_picture, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(33, 33, 33))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 514, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(170, 170, 170)
+                                .addComponent(jButton1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel_main_picture, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jToggleButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                            .addComponent(jLabel_contador)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+ 
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        pagination_next();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+
+        pagination_before();
+        
+        
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jTable_pokedexMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_pokedexMouseClicked
+
+        if (evt.getClickCount() == 2 && jTable_pokedex.getSelectedRow() != -1) {
+            int selected_row = jTable_pokedex.getSelectedRow();
+            int selected_column = 0;
+            DefaultTableModel get_table = (DefaultTableModel) jTable_pokedex.getModel();
+            int id_pokemon = Integer.parseInt(get_table.getValueAt(selected_row, selected_column).toString());
+          //  System.out.println(jLabelImagen_pokemon.getComponents().length);
+       //   jLabelImagen_pokemon.setIcon(null);
+            ct.set_image_pokemon(jLabel_main_picture, String.valueOf(id_pokemon+1));
+           // JOptionPane.showMessageDialog(null, "seleccionado" + id_pokemon);
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable_pokedexMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+ ImageIcon imageicon = new ImageIcon("imagen_principal_default.png");
+   jLabel_main_picture.setIcon(imageicon);
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public void pagination_before() {
+
+        if (jTable_pokedex.getRowCount() >= 0) {
+
+            if (Integer.parseInt(jLabel_contador.getText()) > 1) {
+                DefaultTableModel model = (DefaultTableModel) jTable_pokedex.getModel();
+                model.setRowCount(0);
+                int add_cont = Integer.parseInt(jLabel_contador.getText()) - 1;
+                jLabel_contador.setText(String.valueOf(add_cont));
+
+                int pagination_number = Integer.parseInt(jLabel_contador.getText());
+                //    System.out.println(cantidad_total);
+                //  System.out.println(pagination_number);
+
+                md_resultsarray[] md_resultarray = md_pokemon.getResults();
+                int validate_count = this.md_pokemon.getCount() - (28 * pagination_number);
+
+                //    System.out.println("->" + String.valueOf(validate_count));
+                if (validate_count > 28) {
+                    System.out.println("pasa");
+
+                    for (int i = (28 * pagination_number) - 28; i < 28 * pagination_number; i++) {
+
+                        model.addRow(new Object[]{
+                            i,
+                            md_resultarray[i].getName()
+
+                        });
+
+                    }
+                } else if (validate_count > 0) {
+                    for (int i = (28 * pagination_number); i < (28 * pagination_number) + validate_count; i++) {
+
+                        model.addRow(new Object[]{
+                            i,
+                            md_resultarray[i].getName()
+
+                        });
+
+                    }
+
+                }
+
+            }
+
+        }
+    }
+
+    public void pagination_next() {
+
+        if (jTable_pokedex.getRowCount() >= 28) {
+            DefaultTableModel model = (DefaultTableModel) jTable_pokedex.getModel();
+            model.setRowCount(0);
+
+            int add_cont = Integer.parseInt(jLabel_contador.getText()) + 1;
+            jLabel_contador.setText(String.valueOf(add_cont));
+
+            int pagination_number = Integer.parseInt(jLabel_contador.getText());
+            //    System.out.println(cantidad_total);
+            //  System.out.println(pagination_number);
+
+            md_resultsarray[] md_resultarray = md_pokemon.getResults();
+            int validate_count = this.md_pokemon.getCount() - (28 * pagination_number);
+
+            //    System.out.println("->" + String.valueOf(validate_count));
+            if (validate_count > 28) {
+                // System.out.println("pasa");
+
+                for (int i = (28 * pagination_number) - 28; i < 28 * pagination_number; i++) {
+
+                    model.addRow(new Object[]{
+                        i,
+                        md_resultarray[i].getName()
+
+                    });
+
+                }
+            } else if (validate_count > 0) {
+                for (int i = (28 * pagination_number); i < (28 * pagination_number) + validate_count; i++) {
+
+                    model.addRow(new Object[]{
+                        i,
+                        md_resultarray[i].getName()
+
+                    });
+
+                }
+
+            }
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -124,8 +376,15 @@ public class frm_mainpokedex extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel_contador;
+    private javax.swing.JLabel jLabel_main_picture;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable_pokedex;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
     // End of variables declaration//GEN-END:variables
 }

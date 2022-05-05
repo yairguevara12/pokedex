@@ -1,6 +1,8 @@
 
 package app_pokedex;
 
+import controlador.ct_consulta_ajax;
+
 /**
  *
  * @author yair
@@ -8,6 +10,7 @@ package app_pokedex;
 public class App_pokedex {
 
     public static void main(String[] args) {
+       
     }
     
 }
