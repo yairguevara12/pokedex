@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -26,6 +27,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import model.evolution_chain;
+import model.evolution_chain_chain_evolves_to;
+import model.evolution_chain_chain_evolves_to_evolution_details;
+import model.evolution_chain_chain_evolves_to_evolves_to;
+import model.md_charateristic;
+import model.md_podemon_species_id;
 import model.md_resultsarray;
 
 /**
@@ -38,13 +45,95 @@ public class ct_consulta_ajax {
     HtmlPage htmlpage = null;
     Page page = null;
 
+    public evolution_chain evolution_chain(String url) {
+
+        evolution_chain evolutionchain = new evolution_chain();
+        try {
+            WebClient client = new WebClient();
+
+            Page page1 = client.getPage(url);
+
+            HtmlPage tmpPage = HTMLParser.parseHtml(page1.getWebResponse(), client.getCurrentWindow());
+
+            //   System.out.println(tmpPage.asText());
+            WebResponse response = page1.getWebResponse();
+
+            if (response.getContentType().equals("application/json")) {
+                String json = tmpPage.asText();
+                GsonBuilder builder = new GsonBuilder();
+                builder.setPrettyPrinting();
+
+                Gson gson = builder.create();
+                evolutionchain = gson.fromJson(json, evolution_chain.class);
+                //chain evolution
+              /*  evolution_chain_chain_evolves_to[] getevolution_detail = evolutionchain.getChain().getEvolves_to();
+
+                evolution_chain_chain_evolves_to[] probando = evolutionchain.getChain().getEvolves_to();
+                evolution_chain_chain_evolves_to_evolves_to[] prueba2 = probando[0].getEvolves_to();
+                
+                
+                
+                System.out.println(prueba2[0].getSpecies().getUrl());
+                System.out.println(getevolution_detail[0].getSpecies().getUrl());
+                System.out.println(evolutionchain.getChain().getSpecies().getUrl());*/
+                
+                
+                
+                
+                
+            }
+
+        } catch (Exception e) {
+            System.out.println("error" + e.getMessage());
+
+        }
+        return evolutionchain;
+    }
+
+    public md_podemon_species_id characteristic_pokemon(String id) {
+
+        md_podemon_species_id md_podemon_species_id = new md_podemon_species_id();
+        try {
+            WebClient client = new WebClient();
+
+            Page page1 = client.getPage("https://pokeapi.co/api/v2/pokemon-species/" + id);
+
+            HtmlPage tmpPage = HTMLParser.parseHtml(page1.getWebResponse(), client.getCurrentWindow());
+
+            //   System.out.println(tmpPage.asText());
+            WebResponse response = page1.getWebResponse();
+            /* System.out.println(response.getContentAsString());
+            System.out.println(response.getContentType());*/
+
+            if (response.getContentType().equals("application/json")) {
+                String json = tmpPage.asText();
+                GsonBuilder builder = new GsonBuilder();
+                builder.setPrettyPrinting();
+
+                Gson gson = builder.create();
+                md_podemon_species_id = gson.fromJson(json, md_podemon_species_id.class);
+                //   System.out.println(md_podemon_species_id.getName());
+                /*        System.out.println(student.getDescriptions()s(.description);
+                System.out.println(student.descriptions[5].language.name);*/
+            }
+
+        } catch (Exception e) {
+            System.out.println("error" + e.getMessage());
+
+        }
+        return md_podemon_species_id;
+    }
+
     public md_pokemon_species all_pokemons() {
         md_pokemon_species md_pokemon = new md_pokemon_species();
         try {
             WebClient client = new WebClient();
+            //   Page page = client.getPage("https://pokeapi.co/api/v2/characteristic/4");
             Page page = client.getPage("https://pokeapi.co/api/v2/pokemon-species/?limit=898");
+
             WebResponse response = page.getWebResponse();
-            // System.out.println(response.getContentAsString());
+
+            //   System.out.println(response.getContentAsString());
             if (response.getContentType().equals("application/json")) {
                 String json = response.getContentAsString();
 
@@ -60,6 +149,7 @@ public class ct_consulta_ajax {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
         return md_pokemon;
 
     }
@@ -86,21 +176,11 @@ public class ct_consulta_ajax {
         Iniciar();
         try {
             page = webclient.getPage("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png");
-            // System.out.println(page.());
+
             htmlpage = HTMLParser.parseHtml(page.getWebResponse(), webclient.getCurrentWindow());
             InputStream is = htmlpage.getWebResponse().getContentAsStream();
 
-            /*
-            //  HtmlImage image = (HtmlImage) htmlpage.<HtmlImage>getFirstByXPath("//img[src]");
-            // System.out.println(htmlpage.getElementByName("img").getLocalName());
-            HtmlImage image = (HtmlImage) htmlpage.getElementByName("img").getFirstByXPath("//img");
-            ImageReader imagenReader = image.getImageReader();
-            BufferedImage buf = imagenReader.read(0);
-            ImageIcon imageicon = new ImageIcon(buf);
-            jLabelImagen_pokemon.setIcon(imageicon);
-            
-             */
-            OutputStream out = new FileOutputStream(new File("imagen_principal_default" + id + ".png"));
+            OutputStream out = new FileOutputStream(new File("src\\public_img\\imagen_principal_default" + id + ".png"));
 
             int read = 0;
             byte[] bytes = new byte[1024];
@@ -110,30 +190,21 @@ public class ct_consulta_ajax {
             is.close();
             out.flush();
             out.close();
-            System.out.println("New file created!");
-            //      wait(1000);
-            // Thread.sleep(1000);
-            ImageIcon imageicon = new ImageIcon("imagen_principal_default" + id + ".png");
-            //    BufferedImage myPicture = ImageIO.read(new File("imagen_principal_default.png"));
-            //   JLabel lbl = new JLabel("Hello, World", imageicon, (int) JLabel.LEFT_ALIGNMENT);
-            //    JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 
-            //    Icon icon = new ImageIcon(getClass().getResource("imagen_principal_default.png"));
-            //  jLabelImagen_pokemon.remove();
-            //  picLabel.setIcon(null);
-            //  jLabelImagen_pokemon.setIcon(imageicon);
+            ImageIcon imageicon = new ImageIcon("src\\public_img\\imagen_principal_default" + id + ".png");
+
             jLabelImagen_pokemon.setHorizontalAlignment(jLabelImagen_pokemon.CENTER);
             jLabelImagen_pokemon.setVerticalAlignment(JLabel.CENTER);
             jLabelImagen_pokemon.setBorder(new LineBorder(Color.RED, 4));
             jLabelImagen_pokemon.setIcon(imageicon);
         } catch (Exception e) {
-            System.out.println("Error capcha " + e.getMessage());
+            System.out.println("Error image " + e.getMessage());
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("java.class.path"));
+        //  System.out.println(System.getProperty("java.class.path"));
         ct_consulta_ajax ct = new ct_consulta_ajax();
-        ct.all_pokemons();
+        ct.evolution_chain("2");
     }
 }
